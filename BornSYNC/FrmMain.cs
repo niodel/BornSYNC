@@ -122,7 +122,7 @@ namespace BornSYNC
 
             }
 
-            //SARF ÇIKIŞLARINI AKTAR
+            //SARF ÇIKIŞLARINI AKTARRRRR
             var aktarilmamisSarfKayitlar = GetSarfListesiFromAnahtar();
             foreach (DataRow row in aktarilmamisSarfKayitlar.Rows)
             {
