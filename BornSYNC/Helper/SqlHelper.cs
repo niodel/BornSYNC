@@ -14,10 +14,10 @@ namespace BornSYNC.Helper
 
         public static DataTable TabloGetir(string comText, string ConStr)
         {
+            var conn = new SqlConnection(ConStr);
             DataTable dt = new DataTable();
             try
             {
-                var conn = new SqlConnection(ConStr);
                 SqlCommand cmnd = new SqlCommand();
                 cmnd.CommandTimeout = 0;
                 cmnd.Connection = conn;
@@ -30,23 +30,36 @@ namespace BornSYNC.Helper
 
                 conn.Close();
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Logger("Datatable Datasource Hatası : " + ex.Message);
+            }
+            finally
+            {
+                conn.Dispose();
+            }
             return dt;
         }
 
 
         public static bool VerileriKaydet(string ComText, string ConStr)
         {
+            var conn = new SqlConnection(ConStr);
             try
             {
-                var conn = new SqlConnection(ConStr);
                 conn.Open();
                 var cmd = new SqlCommand(ComText, conn);
                 cmd.ExecuteNonQuery();
                 conn.Close();
                 return true;
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                conn.Dispose();
+            }
             return false;
         }
 

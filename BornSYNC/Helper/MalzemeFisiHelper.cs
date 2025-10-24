@@ -11,6 +11,7 @@ namespace BornSYNC.Helper
     {
 
 
+       public static FrmMain frm = new FrmMain();
         public static MESAJmodel UretimFisiOlustur(LOGOLOGINModel loginModel, MALZEMEFISImodel model, string Con)
         {
             MESAJmodel mesaj = new MESAJmodel();
@@ -25,7 +26,6 @@ namespace BornSYNC.Helper
                 UnityObjects.Data items = LogoCon.Get().UnityApp.NewDataObject(UnityObjects.DataObjectType.doMaterialSlip);
                 items.New();
                 items.DataFields.FieldByName("TYPE").Value = 13;
-                //items.DataFields.FieldByName("NUMBER").Value = "~";
                 items.DataFields.FieldByName("NUMBER").Value = model.DOC_NUMBER;
                 items.DataFields.FieldByName("DATE").Value = model.DATE_;
                 items.DataFields.FieldByName("TIME").Value = LogoTime(2, 2, 2);
@@ -61,12 +61,14 @@ namespace BornSYNC.Helper
                     mesaj.Message = "Üretim Fişi Eklenmiştir !";
                     mesaj.Data = items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
 
+                    if (frm.FIRMA_ADI != "IPEK")
+                    {
+                        var sql = "UPDATE " + frm.LOGODB + ".dbo.LG_" + loginModel.LOGOFIRMA + "_01_STLINE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "', SPECODE='" + model.ALTKALEMLER.First().SPECODE2 + "' WHERE STFICHEREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
+                        var result = SqlHelper.VerileriKaydet(sql, Con);
 
-                    var sql = "UPDATE LG_" + loginModel.LOGOFIRMA + "_01_STLINE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "', SPECODE='" + model.ALTKALEMLER.First().SPECODE2 + "' WHERE STFICHEREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
-                    var result = SqlHelper.VerileriKaydet(sql, Con);
-
-                    var sql2 = "UPDATE LG_" + loginModel.LOGOFIRMA + "_01_STFICHE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "' WHERE LOGICALREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
-                    var result2 = SqlHelper.VerileriKaydet(sql2, Con);
+                        var sql2 = "UPDATE " + frm.LOGODB + ".dbo.LG_" + loginModel.LOGOFIRMA + "_01_STFICHE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "' WHERE LOGICALREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
+                        var result2 = SqlHelper.VerileriKaydet(sql2, Con);
+                    }
 
                 }
                 else
@@ -97,7 +99,7 @@ namespace BornSYNC.Helper
             {
                 mesaj.HasError = true;
                 mesaj.ErrorCode = 1;
-                mesaj.Message = "Üretim Fişi Oluştururken Hata Meydana Geldi.";
+                mesaj.Message = "Üretim Fişi Oluştururken Hata Meydana Geldi." + ex.Message;
                 SqlHelper.Logger(mesaj.Message);
             }
             return mesaj;
@@ -121,7 +123,6 @@ namespace BornSYNC.Helper
                 UnityObjects.Data items = LogoCon.Get().UnityApp.NewDataObject(UnityObjects.DataObjectType.doMaterialSlip);
                 items.New();
                 items.DataFields.FieldByName("TYPE").Value = 12;
-                //items.DataFields.FieldByName("NUMBER").Value = "~";
                 items.DataFields.FieldByName("NUMBER").Value = model.DOC_NUMBER;
                 items.DataFields.FieldByName("DATE").Value = model.DATE_;
                 items.DataFields.FieldByName("TIME").Value = LogoTime(2, 2, 2);
@@ -157,12 +158,15 @@ namespace BornSYNC.Helper
                     mesaj.Message = "Sarf Fişi Eklenmiştir !";
                     mesaj.Data = items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
 
-                    var sql = "UPDATE LG_" + loginModel.LOGOFIRMA + "_01_STLINE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "', SPECODE='" + model.ALTKALEMLER.First().SPECODE2 + "' WHERE STFICHEREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
-                    var result = SqlHelper.VerileriKaydet(sql, Con);
+                    if (frm.FIRMA_ADI != "IPEK")
+                    {
+                        var sql = "UPDATE " + frm.LOGODB + ".dbo.LG_" + loginModel.LOGOFIRMA + "_01_STLINE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "', SPECODE='" + model.ALTKALEMLER.First().SPECODE2 + "' WHERE STFICHEREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
+                        var result = SqlHelper.VerileriKaydet(sql, Con);
 
-                    var sql2 = "UPDATE LG_" + loginModel.LOGOFIRMA + "_01_STFICHE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "' WHERE LOGICALREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
-                    var result2 = SqlHelper.VerileriKaydet(sql2, Con);
+                        var sql2 = "UPDATE " + frm.LOGODB + ".dbo.LG_" + loginModel.LOGOFIRMA + "_01_STFICHE SET QPRODFCTYP=3,QPRODFCREF='" + model.ALTKALEMLER.First().SPECODE + "' WHERE LOGICALREF=" + items.DataFields.DBFieldByName("LOGICALREF").Value.ToString();
+                        var result2 = SqlHelper.VerileriKaydet(sql2, Con);
 
+                    }
                 }
                 else
                 {
