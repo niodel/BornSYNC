@@ -39,59 +39,48 @@ namespace BornSYNC
         {
             InitializeComponent();
         }
-        private DateTime lastRunTime = DateTime.MinValue;
         private void FrmMain_Load(object sender, EventArgs e)
         {
             LoginModel = new LOGOLOGINModel(LOGOUSER, LOGOPASS, FIRMANO);
-            if (FIRMA_ADI == "NUTRILINE")
+
+            if (FIRMA_ADI == "IPEKYEM")
+            {
+                timer1.Interval = 60000; // 1 dakika
+            }
+            else if (FIRMA_ADI == "NUTRILINE")
             {
                 timer1.Interval = 600000;
             }
-            timer1.Start(); // Start etmeyi unutma!
-            timer1_Tick(null, null);
-        }
 
+            timer1.Start();
+        }
+        private DateTime lastRunDate = DateTime.MinValue;
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (FIRMA_ADI == "IPEKYEM")
             {
-                // Sadece saat tam 09:00 ve dakika 00-01 arasında
-                if (DateTime.Now.Hour == 9 && DateTime.Now.Minute < 1)
-                {
-                    // Aynı gün içinde tekrar çalışmaması için kontrol et
-                    if (lastRunTime.Date != DateTime.Now.Date)
-                    {
-                        lastRunTime = DateTime.Now;
-                        Cursor.Current = Cursors.WaitCursor;
-                        timer1.Stop();
-                        try
-                        {
-                            AdmUretimFisAktar();
-                        }
-                        catch (Exception ex)
-                        {
-                            SqlHelper.Logger(ex.Message);
-                        }
-                        timer1.Start();
-                        Cursor.Current = Cursors.Arrow;
-                    }
-                }
-            }
-            else
-            {
-                Cursor.Current = Cursors.WaitCursor;
-                timer1.Stop();
-                try
+                // Saat 9 ve sonrası + bugün henüz çalışmadıysa
+                if (DateTime.Now.Hour >= 9 && lastRunDate.Date != DateTime.Now.Date)
                 {
                     AdmUretimFisAktar();
+                    lastRunDate = DateTime.Now;
                 }
-                catch (Exception ex)
-                {
-                    SqlHelper.Logger(ex.Message);
-                }
-                timer1.Start();
-                Cursor.Current = Cursors.Arrow;
+                return;
             }
+
+            // Diğer firmalar normal...
+            Cursor.Current = Cursors.WaitCursor;
+            timer1.Stop();
+            try
+            {
+                AdmUretimFisAktar();
+            }
+            catch (Exception ex)
+            {
+                SqlHelper.Logger(ex.Message);
+            }
+            timer1.Start();
+            Cursor.Current = Cursors.Arrow;
         }
 
 
