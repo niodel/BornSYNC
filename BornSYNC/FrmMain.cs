@@ -42,33 +42,16 @@ namespace BornSYNC
         private void FrmMain_Load(object sender, EventArgs e)
         {
             LoginModel = new LOGOLOGINModel(LOGOUSER, LOGOPASS, FIRMANO);
-
-            if (FIRMA_ADI == "IPEKYEM")
-            {
-                timer1.Interval = 60000; // 1 dakika
-            }
-            else if (FIRMA_ADI == "NUTRILINE")
+            if (FIRMA_ADI == "NUTRILINE")
             {
                 timer1.Interval = 600000;
             }
-
-            timer1.Start();
+            timer1.Start(); // Start etmeyi unutma!
+            timer1_Tick(null, null);
         }
         private DateTime lastRunDate = DateTime.MinValue;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (FIRMA_ADI == "IPEKYEM")
-            {
-                // Saat 9 ve sonrası + bugün henüz çalışmadıysa
-                if (DateTime.Now.Hour >= 9 && lastRunDate.Date != DateTime.Now.Date)
-                {
-                    AdmUretimFisAktar();
-                    lastRunDate = DateTime.Now;
-                }
-                return;
-            }
-
-            // Diğer firmalar normal...
             Cursor.Current = Cursors.WaitCursor;
             timer1.Stop();
             try
